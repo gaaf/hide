@@ -98,5 +98,13 @@ hide.Default.SetInt32(myInt32Prime)   // set prime used for int32 obfuscation
 hide.Default.SetUint32(myUint32Prime) // set prime used for uint32 obfuscation
 hide.Default.SetInt64(myInt64Prime)   // set prime used for int64 obfuscation
 hide.Default.SetUint64(myUint64Prime) // set prime used for uint64 obfuscation
+```
 
+# Benchmarks
+on i7 6700K running Ubuntu 15.10 and go1.6
+```
+BenchmarkInt32Obfuscate-8 	10000000	       138 ns/op	      48 B/op	       1 allocs/op
+BenchmarkInt64Obfuscate-8 	10000000	       137 ns/op	      48 B/op	       1 allocs/op
+BenchmarkUint32Obfuscate-8	10000000	       137 ns/op	      48 B/op	       1 allocs/op
+BenchmarkUint64Obfuscate-8	10000000	       138 ns/op	      48 B/op	       1 allocs/op
 ```
