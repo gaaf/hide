@@ -128,3 +128,35 @@ func (h *Hide) SetUint64(prime *big.Int) error {
 
 	return nil
 }
+
+func (h *Hide) Int32Obfuscate(i int32) int32 {
+	return Int32Obfuscate(i, h.int32prime)
+}
+
+func (h *Hide) Int32Debfuscate(i int32) int32 {
+	return Int32Deobfuscate(i, h.int32coprime)
+}
+
+func (h *Hide) Int64Obfuscate(i int64) int64 {
+	return Int64Obfuscate(i, h.int64prime)
+}
+
+func (h *Hide) Int64Debfuscate(i int64) int64 {
+	return Int64Deobfuscate(i, h.int64coprime)
+}
+
+func (h *Hide) Uint32Obfuscate(i uint32) uint32 {
+	return Uint32Obfuscate(i, h.uint32prime)
+}
+
+func (h *Hide) Uint32Debfuscate(i uint32) uint32 {
+	return Uint32Deobfuscate(i, h.uint32coprime)
+}
+
+func (h *Hide) Uint64Obfuscate(i uint64) uint64 {
+	return Uint64Obfuscate(i, h.uint64prime)
+}
+
+func (h *Hide) Uint64Debfuscate(i uint64) uint64 {
+	return Uint64Deobfuscate(i, h.uint64coprime)
+}
