@@ -66,9 +66,9 @@ Also supported: `int32`, `uint32`, `int64`, `uint64`
 # Remember to set your own primes!
 Package comes with default primes set, but please pick your own. Good source: https://primes.utm.edu/lists/small/small.html
 ```go
-hide.SetInt32(myInt32Prime)   // set prime used for int32 obfuscation
-hide.SetUint32(myUint32Prime) // set prime used for uint32 obfuscation
-hide.SetInt64(myInt64Prime)   // set prime used for int64 obfuscation
-hide.SetUint64(myUint64Prime) // set prime used for uint64 obfuscation
+hide.Default.SetInt32(myInt32Prime)   // set prime used for int32 obfuscation
+hide.Default.SetUint32(myUint32Prime) // set prime used for uint32 obfuscation
+hide.Default.SetInt64(myInt64Prime)   // set prime used for int64 obfuscation
+hide.Default.SetUint64(myUint64Prime) // set prime used for uint64 obfuscation
 
 ```
