@@ -5,6 +5,8 @@ import (
 	"math/big"
 )
 
+// Hide stores primes and coprimes used to obfuscate/deobfuscate different
+// integer types
 type Hide struct {
 	int32prime    *big.Int
 	int32coprime  *big.Int
@@ -17,6 +19,7 @@ type Hide struct {
 }
 
 var (
+	// Default stores default, fallback primes and coprimes
 	Default = Hide{
 		int32prime:    new(big.Int).SetInt64(1500450271),
 		int32coprime:  new(big.Int).SetInt64(1482223135),

@@ -5,12 +5,17 @@ import (
 	"math/big"
 )
 
+// Int32 is an alias of int32 with obfuscating/deobfuscating json marshaller
 type Int32 int32
 
+// MarshalJSON satisfies json.Marshaller and transparently obfuscates the value
+// using Default prime
 func (i *Int32) MarshalJSON() ([]byte, error) {
 	return json.Marshal(Int32Obfuscate(int32(*i), nil))
 }
 
+// UnmarshalJSON satisfies json.Marshaller and transparently deobfuscates the
+// value using coprime of Default prime
 func (i *Int32) UnmarshalJSON(data []byte) error {
 	var obf int32
 	if err := json.Unmarshal(data, &obf); err != nil {
@@ -21,6 +26,9 @@ func (i *Int32) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
+// Int32Obfuscate obfuscates int32 provided as the 1st parameter using prime
+// provided as the second one. If the provided prime is nil it will fall back
+// to Default prime
 func Int32Obfuscate(val int32, prime *big.Int) int32 {
 	if prime == nil {
 		prime = Default.int32prime
@@ -30,6 +38,9 @@ func Int32Obfuscate(val int32, prime *big.Int) int32 {
 	return int32(bg.Int64())
 }
 
+// Int32Deobfuscate deobfuscates int32 provided as the 1st parameter using
+// coprime provided as the second one. If the provided coprime is nil it will
+// fall back to Default coprime
 func Int32Deobfuscate(val int32, coprime *big.Int) int32 {
 	if coprime == nil {
 		coprime = Default.int32coprime
