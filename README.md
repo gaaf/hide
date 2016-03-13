@@ -1,4 +1,5 @@
-# h**ID**e
+# h**ID**e  [![Build Status](https://drone.io/github.com/c2h5oh/hide/status.png)](https://drone.io/github.com/c2h5oh/hide/latest)  [![GoDoc](https://godoc.org/github.com/c2h5oh/hide?status.svg)](https://godoc.org/github.com/c2h5oh/hide)  [![Go Report Card Badge](http://goreportcard.com/badge/c2h5oh/hide)](http://goreportcard.com/report/c2h5oh/hide)
+
 Super easy ID obfuscation that actually works
 
 ## The why
