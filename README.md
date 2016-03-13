@@ -62,6 +62,34 @@ That's it. Really. ID will be transparently obfuscated on `json.Marshal` and deo
 
 Also supported: `int32`, `uint32`, `int64`, `uint64`
 
+## Sample Results
+```
+Random IDs
+   69407 -> 1679933185
+  365732 -> 1149554396
+  490883 -> 1588788253
+   20826 ->  342781798
+  196984 ->   79257480
+  849265 -> 1757383279
+  235515 -> 1521361573
+  649322 ->  694474326
+  869519 ->  688585617
+  236378 -> 1477305702
+
+Consecutive IDs
+  308035 -> 1178570333
+  308036 ->  531536956
+  308037 -> 2031987227
+  308038 -> 1384953850
+  308039 ->  737920473
+  308040 ->   90887096
+  308041 -> 1591337367
+  308042 ->  944303990
+  308043 ->  297270613
+  308044 -> 1797720884
+```
+Run the example in `cmd` for more.
+
 
 # Remember to set your own primes!
 Package comes with default primes set, but please pick your own. Good source: https://primes.utm.edu/lists/small/small.html
