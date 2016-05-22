@@ -56,7 +56,7 @@ Three words: `Modular multiplicative inverse`. Math warning: https://en.wikipedi
 * To deobfuscate ID calculate MMI of the obfuscated ID using inverse of the previously used prime
 * You can still use autoincrement integers as IDs internally, with all of the benefits
 * Obfuscated IDs look random
-* Figuring which prime was used is not easy and brute-forcing it will be hard - even for `int32` there are close to **200.000.000** primes to choose from
+* Figuring which prime was used is not easy and brute-forcing it will be hard - even for `int32` there are close to **200.000.000** primes to choose from. You can also set a value used to XOR obfuscated IDs making brute-forcing the prime A LOT more difficult
 * Performance is great - this implementation uses highly optimized functions used by Go `crypto/*` packages
 
 
@@ -123,14 +123,22 @@ hide.Default.SetInt64(myInt64Prime)   // set prime used for int64 obfuscation
 hide.Default.SetUint64(myUint64Prime) // set prime used for uint64 obfuscation
 ```
 
+Optionally (highly recommended) set a value used to XOR the resulting ID making discovering the prime used for obfuscation way more difficult
+```go
+hide.Default.SetXor(myXor)
+```
+
 See `obfuscation_test.go` if you need an example.
 
 
 # Benchmarks
 on i7 6700K running Ubuntu 15.10 and go1.6
 ```
-BenchmarkInt32Obfuscate-8 	10000000	       138 ns/op	      48 B/op	       1 allocs/op
-BenchmarkInt64Obfuscate-8 	10000000	       137 ns/op	      48 B/op	       1 allocs/op
-BenchmarkUint32Obfuscate-8	10000000	       137 ns/op	      48 B/op	       1 allocs/op
-BenchmarkUint64Obfuscate-8	10000000	       138 ns/op	      48 B/op	       1 allocs/op
+BenchmarkInt32Obfuscate-8 	10000000	       110 ns/op	      48 B/op	       1 allocs/op
+BenchmarkInt64Obfuscate-8 	10000000	       109 ns/op	      48 B/op	       1 allocs/op
+BenchmarkUint32Obfuscate-8	10000000	       108 ns/op	      48 B/op	       1 allocs/op
+BenchmarkUint64Obfuscate-8	10000000	       110 ns/op	      48 B/op	       1 allocs/op
 ```
+
+# Limitations
+The purpose of this package is to obfuscate IDs. **Obfuscate and NOT encrypt**. The transformation used is simple and fast, which makes it a great option for a low-overhead obfuscation, but the same reasons make it brute-forceable should anyone be determined enough. Using XOR makes things better, provided brute-force is used - I would be amazed if multiple attacks reducing the complexity didn't exist.
