@@ -10,12 +10,16 @@ import (
 type Hide struct {
 	int32prime    *big.Int
 	int32inverse  *big.Int
+	int32xor      *big.Int
 	int64prime    *big.Int
 	int64inverse  *big.Int
+	int64xor      *big.Int
 	uint32prime   *big.Int
 	uint32inverse *big.Int
+	uint32xor     *big.Int
 	uint64prime   *big.Int
 	uint64inverse *big.Int
+	uint64xor     *big.Int
 }
 
 var (
@@ -87,6 +91,30 @@ func (h *Hide) SetInt64(prime *big.Int) error {
 	return nil
 }
 
+func (h *Hide) SetXor(xor *big.Int) error {
+	if xor == nil {
+		return ErrNil
+	}
+
+	int32xor := *xor
+	int32xor.And(&int32xor, int32Max)
+	h.int32xor = &int32xor
+
+	int64xor := *xor
+	int64xor.And(&int64xor, int64Max)
+	h.int64xor = &int64xor
+
+	uint32xor := *xor
+	uint32xor.And(&uint32xor, uint32Max)
+	h.uint32xor = &uint32xor
+
+	uint64xor := *xor
+	uint64xor.And(&uint64xor, uint64Max)
+	h.uint64xor = &uint64xor
+
+	return nil
+}
+
 func (h *Hide) SetUint32(prime *big.Int) error {
 	if prime == nil {
 		return ErrNil
@@ -132,33 +160,33 @@ func (h *Hide) SetUint64(prime *big.Int) error {
 }
 
 func (h *Hide) Int32Obfuscate(i int32) int32 {
-	return Int32Obfuscate(i, h.int32prime)
+	return Int32Obfuscate(i, h.int32prime, h.int32xor)
 }
 
 func (h *Hide) Int32Deobfuscate(i int32) int32 {
-	return Int32Deobfuscate(i, h.int32inverse)
+	return Int32Deobfuscate(i, h.int32inverse, h.int32xor)
 }
 
 func (h *Hide) Int64Obfuscate(i int64) int64 {
-	return Int64Obfuscate(i, h.int64prime)
+	return Int64Obfuscate(i, h.int64prime, h.int64xor)
 }
 
 func (h *Hide) Int64Deobfuscate(i int64) int64 {
-	return Int64Deobfuscate(i, h.int64inverse)
+	return Int64Deobfuscate(i, h.int64inverse, h.int64xor)
 }
 
 func (h *Hide) Uint32Obfuscate(i uint32) uint32 {
-	return Uint32Obfuscate(i, h.uint32prime)
+	return Uint32Obfuscate(i, h.uint32prime, h.uint32xor)
 }
 
 func (h *Hide) Uint32Deobfuscate(i uint32) uint32 {
-	return Uint32Deobfuscate(i, h.uint32inverse)
+	return Uint32Deobfuscate(i, h.uint32inverse, h.uint32xor)
 }
 
 func (h *Hide) Uint64Obfuscate(i uint64) uint64 {
-	return Uint64Obfuscate(i, h.uint64prime)
+	return Uint64Obfuscate(i, h.uint64prime, h.uint64xor)
 }
 
 func (h *Hide) Uint64Deobfuscate(i uint64) uint64 {
-	return Uint64Deobfuscate(i, h.uint64inverse)
+	return Uint64Deobfuscate(i, h.uint64inverse, h.uint64xor)
 }

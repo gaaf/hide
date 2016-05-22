@@ -24,6 +24,10 @@ func init() {
 		panic(err)
 	}
 
+	if err := Default.SetXor(new(big.Int).SetUint64(3469983624777167712)); err != nil {
+		panic(err)
+	}
+
 	rand.Seed(time.Now().Unix())
 }
 
