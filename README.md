@@ -3,27 +3,49 @@
 Super easy ID obfuscation that actually works
 
 ## The why
-Using auto-assigned IDs from database is far from ideal, because it provides a lot of information that can be exploited
+IDs autoassigned by database (autoincrement, sequence, etc) leak quite a bit of information about your data:
 
-* max value leaks how many items exist
-* max value change leaks how fast new ones are added
-* iterating over ID makes scraping all items easy
+* the highest ID leaks how many rows (users, products, etc) have been created
+* the change of the highest ID over time leaks how fast rows (users, products, etc) are being added, how fast you grow
+* the change in speed of the highest ID increase over time leaks if and how fast your growth is accelerating
+* iterating over IDs makes scraping all items easy. You can often extract a lot from that too, ie:
+  * how many are inactive/deleted and how has that changed over time (churn)
+  * the actual content
+* and more
+
+At the same time autoincrement IDs are great: they maintain sort order, are dense (more efficient, smaller indexes), can be efficiently stored in DB, guaranteed to be unique and provide you the same information they leak at glance...
 
 
 ## The how
 
-### Discarded ideas:
-* base64 encode Ids (like Youtube ones) - it's obvious, super easy to reverse - even without coding: `10a` is followed by `10b`
-* UUIDs - don't maintain order on sort, not the best pick for primary keys in relational databases - slower than integers, especially on joins, use more storage, partitioning is harder
-* random IDs - don't maintain order on sort, the more values you get the more times you will have a duplicate and will have to generate another, results in sparse indexes, partitioning is harder
+### Rejected solutions:
+
+* random IDs:
+  * order is not maintained
+  * sparse - larger less efficient indexes, harder partitioning/sharding
+  * as you get more rows you will randomly get an existing ID and will have to retry: increased complexity, non-deterministic insert time
+* UUIDs:
+  * order is not maintained
+  * sparse - see above
+  * looooooong
+  * not the best pick for primary keys in relational databases - less efficient than integers, especially on joins, significantly larger (storage, indexes)
+* Time-based IDs:
+  * leak most of the information that autoincrement IDs leak - it just requires a little extra effort
+  * in addition to that leak exactly when a row has been created
+  * less dense than autoincrement IDs
+  * all hell breaks loose when system clock is adjusted
+  * require extra logic to avoid duplicates if 2 items are inserted within the smallest unit of time used
+* Base64-encoded IDs (Youtube-like):
+  * they are just regular autoincrement IDs displayed in a different format that is trivial to reverse
 
 
-### So what do we want?
+### Goal
+
 * well obfuscated - hard to figure out from outside even if you know the method
 * integer IDs, at least in the database. Preferably still consecutive or at least not sparse
-* maintained order (older ID < newer ID)
+* maintained order (older ID < newer ID), at least in database
 * as little overhead as possible
-* as little code changes required
+* as little changes to existing code as possible
 
 
 ### Solution
@@ -31,10 +53,11 @@ Using auto-assigned IDs from database is far from ideal, because it provides a l
 Three words: `Modular multiplicative inverse`. Math warning: https://en.wikipedia.org/wiki/Modular_multiplicative_inverse
 
 * To obfuscate ID calculate MMI of the ID using a large prime number
-* To deobfuscate ID calculate MMI of the obfuscated ID using coprime of the previously used prime
-* You can still use consecutive integers as IDs, with all of the benefits
+* To deobfuscate ID calculate MMI of the obfuscated ID using inverse of the previously used prime
+* You can still use autoincrement integers as IDs internally, with all of the benefits
 * Obfuscated IDs look random
 * Figuring which prime was used is not easy and brute-forcing it will be hard - even for `int32` there are close to **200.000.000** primes to choose from
+* Performance is great - this implementation uses highly optimized functions used by Go `crypto/*` packages
 
 
 # Usage example
@@ -92,13 +115,16 @@ Run the example in `cmd` for more.
 
 
 # Remember to set your own primes!
-Package comes with default primes set, but please pick your own. Good source: https://primes.utm.edu/lists/small/small.html
+Package comes with default ~~primes set, but~~ primes NOT SET please pick your own. Good source: https://primes.utm.edu/lists/small/small.html
 ```go
 hide.Default.SetInt32(myInt32Prime)   // set prime used for int32 obfuscation
 hide.Default.SetUint32(myUint32Prime) // set prime used for uint32 obfuscation
 hide.Default.SetInt64(myInt64Prime)   // set prime used for int64 obfuscation
 hide.Default.SetUint64(myUint64Prime) // set prime used for uint64 obfuscation
 ```
+
+See `obfuscation_test.go` if you need an example.
+
 
 # Benchmarks
 on i7 6700K running Ubuntu 15.10 and go1.6

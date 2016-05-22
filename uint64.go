@@ -15,7 +15,7 @@ func (i *Uint64) MarshalJSON() ([]byte, error) {
 }
 
 // UnmarshalJSON satisfies json.Marshaller and transparently deobfuscates the
-// value using coprime of Default prime
+// value using inverse of Default prime
 func (i *Uint64) UnmarshalJSON(data []byte) error {
 	var obf uint64
 	if err := json.Unmarshal(data, &obf); err != nil {
@@ -40,14 +40,14 @@ func Uint64Obfuscate(val uint64, prime *big.Int) uint64 {
 }
 
 // Uint64Deobfuscate deobfuscates uint64 provided as the 1st parameter using
-// coprime provided as the second one. If the provided coprime is nil it will
-// fall back to Default coprime
-func Uint64Deobfuscate(val uint64, coprime *big.Int) uint64 {
-	if coprime == nil {
-		coprime = Default.uint64coprime
+// inverse provided as the second one. If the provided inverse is nil it will
+// fall back to Default inverse
+func Uint64Deobfuscate(val uint64, inverse *big.Int) uint64 {
+	if inverse == nil {
+		inverse = Default.uint64inverse
 	}
 	bg := new(big.Int).SetUint64(val)
-	modularMultiplicativeInverse(bg, coprime, uint64Max)
+	modularMultiplicativeInverse(bg, inverse, uint64Max)
 
 	return bg.Uint64()
 }
